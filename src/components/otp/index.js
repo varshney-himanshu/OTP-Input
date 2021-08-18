@@ -3,7 +3,7 @@ import "./style.css";
 
 let index = 0;
 
-export default function OTP() {
+export default function OTP(props) {
   const ref = useRef(null);
   const [values, setValues] = useState({
     _0: "",
@@ -101,6 +101,18 @@ export default function OTP() {
     }
   }
 
+  function toggleOnclose() {
+    setValues({
+      _0: "",
+      _1: "",
+      _2: "",
+      _3: "",
+      _4: "",
+      _5: "",
+    });
+    props.active();
+  }
+
   function onPaste(e) {
     var clipboardData, pastedData;
 
@@ -125,65 +137,78 @@ export default function OTP() {
   }
 
   return (
-    <div className="otp">
-    <div className="otp__title"> Phone Verification</div>
-    <div className="otp__line"></div>
-    <div className="otp__content">Enter the OTP you received on 89206-6XXXX</div>
-      <div ref={ref}>
-        <input
-          id="index-0"
-          className="otp__input"
-          onFocus={() => setPosition(0)}
-          onChange={handleOnChange}
-          value={values._0}
-          onPaste={onPaste}
-        ></input>
-        <input
-          id="index-1"
-          className="otp__input"
-          onFocus={() => setPosition(1)}
-          onChange={handleOnChange}
-          onPaste={onPaste}
-          value={values._1}
-        ></input>
-        <input
-          id="index-2"
-          className="otp__input"
-          onFocus={() => setPosition(2)}
-          onChange={handleOnChange}
-          onPaste={onPaste}
-          value={values._2}
-        ></input>
-        <input
-          id="index-3"
-          className="otp__input"
-          onFocus={() => setPosition(3)}
-          onChange={handleOnChange}
-          onPaste={onPaste}
-          value={values._3}
-        ></input>
-        <input
-          id="index-4"
-          className="otp__input"
-          onFocus={() => setPosition(4)}
-          onChange={handleOnChange}
-          onPaste={onPaste}
-          value={values._4}
-        ></input>
-        <input
-          id="index-5"
-          className="otp__input"
-          onFocus={() => setPosition(5)}
-          onChange={handleOnChange}
-          onPaste={onPaste}
-          value={values._5}
-        ></input>
+    <div className="input-card">
+      <div className="form-container">
+        <button className="input-card__close" onClick={toggleOnclose}>
+          <i className="fas fa-times"></i>
+        </button>
+        <div className="otp">
+          <div className="otp__title"> Phone Verification</div>
+          <div className="otp__line"></div>
+          <div className="otp__content">
+            Enter the OTP you received on 89206-6XXXX
+          </div>
+          <div ref={ref}>
+            <input
+              id="index-0"
+              className="otp__input"
+              onFocus={() => setPosition(0)}
+              onChange={handleOnChange}
+              value={values._0}
+              onPaste={onPaste}
+            ></input>
+            <input
+              id="index-1"
+              className="otp__input"
+              onFocus={() => setPosition(1)}
+              onChange={handleOnChange}
+              onPaste={onPaste}
+              value={values._1}
+            ></input>
+            <input
+              id="index-2"
+              className="otp__input"
+              onFocus={() => setPosition(2)}
+              onChange={handleOnChange}
+              onPaste={onPaste}
+              value={values._2}
+            ></input>
+            <input
+              id="index-3"
+              className="otp__input"
+              onFocus={() => setPosition(3)}
+              onChange={handleOnChange}
+              onPaste={onPaste}
+              value={values._3}
+            ></input>
+            <input
+              id="index-4"
+              className="otp__input"
+              onFocus={() => setPosition(4)}
+              onChange={handleOnChange}
+              onPaste={onPaste}
+              value={values._4}
+            ></input>
+            <input
+              id="index-5"
+              className="otp__input"
+              onFocus={() => setPosition(5)}
+              onChange={handleOnChange}
+              onPaste={onPaste}
+              value={values._5}
+            ></input>
+          </div>
+          <div className="otp__alternate-options">
+            <button className="otp__alternate-options__changebtn">
+              Change Number
+            </button>
+            <button className="otp__alternate-options__changebtn">
+              Re-send OTP
+            </button>
+          </div>
+          <button className="otp__submit-btn">Verify Phone Number</button>
+        </div>
       </div>
-      <div className="otp__alternate-options">
-        <button className="otp__alternate-options__changebtn">Change Number</button>
-        <button className="otp__alternate-options__changebtn">Re-send OTP</button>
-      </div>
-      <button className= "otp__submit-btn">Verify Phone Number</button>
     </div>
   );
 }

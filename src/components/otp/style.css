@@ -53,7 +53,7 @@
 .otp__submit-btn {
   margin-top: 30px;
   border: none;
-  background-color: #00FFB9;
+  background-color: #00ffb9;
   padding: 8px 30px 8px 30px;
   border-radius: 30px;
   cursor: pointer;
@@ -61,6 +61,6 @@
   font-size: 15px;
 }
 
-.otp__submit-btn:hover{
+.otp__submit-btn:hover {
   background-color: #02eaa8;
 }
