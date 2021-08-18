@@ -126,6 +126,8 @@ export default function OTP() {
 
   return (
     <div className="otp">
+    <div className="otp__title"> Phone Verification</div>
+    <div className="otp__content">Enter the OTP you received on 89206-6XXXX</div>
       <div ref={ref}>
         <input
           id="index-0"
@@ -176,6 +178,11 @@ export default function OTP() {
           value={values._5}
         ></input>
       </div>
+      <div className="otp__alternate-options">
+        <button className="otp__alternate-options__changebtn">Change Number</button>
+        <button className="otp__alternate-options__changebtn">Re-send OTP</button>
+      </div>
+      <button className= "otp__submit-btn">Verify Phone Number</button>
     </div>
   );
 }

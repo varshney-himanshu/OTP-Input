@@ -2,6 +2,7 @@
 }
 
 .otp__input {
+  margin-top: 10px;
   width: 50px;
   margin-right: 10px;
   border: none;
@@ -11,4 +12,45 @@
   font-size: 30px;
   text-align: center;
   outline: none;
+}
+
+/* 6db68b */
+
+.otp__title {
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.otp__content {
+  color: #acacac;
+  font-weight: 500;
+}
+
+.otp__alternate-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 20px;
+}
+
+.otp__alternate-options__changebtn {
+  border: none;
+  background: transparent;
+  color: #003b9b;
+  cursor: pointer;
+}
+
+.otp__submit-btn {
+  margin-top: 30px;
+  border: none;
+  background-color: #00FFB9;
+  padding: 8px 30px 8px 30px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.otp__submit-btn:hover{
+  background-color: #02eaa8;
 }
