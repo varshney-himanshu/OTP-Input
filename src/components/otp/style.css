@@ -24,6 +24,16 @@
 .otp__content {
   color: #acacac;
   font-weight: 500;
+  margin-top: 25px;
+}
+
+.otp__line {
+  position: absolute;
+  left: 15%;
+  height: 1px;
+  width: 70%;
+  background-color: #cecccc;
+  margin-top: 10px;
 }
 
 .otp__alternate-options {

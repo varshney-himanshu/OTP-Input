@@ -127,6 +127,7 @@ export default function OTP() {
   return (
     <div className="otp">
     <div className="otp__title"> Phone Verification</div>
+    <div className="otp__line"></div>
     <div className="otp__content">Enter the OTP you received on 89206-6XXXX</div>
       <div ref={ref}>
         <input
