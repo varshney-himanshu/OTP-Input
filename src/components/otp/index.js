@@ -12,6 +12,7 @@ export default function OTP(props) {
     _3: "",
     _4: "",
     _5: "",
+    str: "",
   });
 
   function setPosition(pos) {
