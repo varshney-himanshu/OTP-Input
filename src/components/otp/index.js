@@ -16,9 +16,11 @@ function OTP({
   containerClass,
   buttonStyle,
   buttonContainer,
+  hasErrored,
 }) {
   const ref = useRef(null);
   const [code, setCode] = useState("");
+  let validRegex = isNumber ? /^[0-9]+$/ : /./;
 
   /* makes the current index -1 when someone clicks outside of the input container */
   useEffect(() => {
@@ -34,25 +36,44 @@ function OTP({
     };
   }, []);
 
-  /* Focuses on the next input when characters are entered sequentially */
   useEffect(() => {
-    if (code.length - 1 >= index) {
-      if (index < numberOfInputs - 1) {
-        const nextInput = document.querySelector(`#index-${index + 1}`);
-        nextInput.focus();
-        return;
+    if (hasErrored === true) {
+      const inputClassAll = document.querySelectorAll(".otp__input");
+      for (let i = 0; i < inputClassAll.length; i++) {
+        inputClassAll[i].classList.toggle("otp__input--active");
+      }
+    } else {
+      const inputClassAll = document.querySelectorAll(".otp__input");
+      for (let i = 0; i < inputClassAll.length; i++) {
+        inputClassAll[i].classList.remove("otp__input--active");
       }
     }
+  }, [hasErrored]);
 
-    if (code.length < numberOfInputs && keyCode !== 8) {
-      const nextInput = document.querySelector(`#index-${code.length}`);
-      nextInput.focus();
+  /* Focuses on the next input when characters are entered sequentially */
+  useEffect(() => {
+    if (index !== -1) {
+      if (code.length - 1 >= index) {
+        if (index < numberOfInputs - 1) {
+          const nextInput = document.querySelector(`#index-${index + 1}`);
+          nextInput.focus();
+          return;
+        }
+      }
+
+      if (code.length < numberOfInputs && keyCode !== 8) {
+        const nextInput = document.querySelector(`#index-${code.length}`);
+        nextInput.focus();
+      }
     }
   }, [code, numberOfInputs]);
 
   /* Sets the index position and selects the character when input is focused */
   function onInputFocus(e, pos) {
     const currentInput = document.querySelector(`#index-${pos}`);
+    if (currentInput !== null) {
+      currentInput.classList.remove("otp__input--active");
+    }
 
     setTimeout(() => {
       currentInput.setSelectionRange(0, 1);
@@ -105,7 +126,7 @@ function OTP({
   function handleOnChange(e) {
     let char = e.target.value[0];
 
-    if (e.target.value.match(/^[0-9]+$/)) {
+    if (e.target.value.match(validRegex)) {
       if (index !== -1) {
         if (e.target.value !== "") {
           //if the code is empty
@@ -137,11 +158,6 @@ function OTP({
   function setCharAt(str, index, chr) {
     if (index > str.length - 1) return str;
     return str.substring(0, index) + chr + str.substring(index + 1);
-  }
-
-  function toggleOnclose() {
-    setCode("");
-    active();
   }
 
   /* pastes the string from the clipboard  */
@@ -204,9 +220,6 @@ function OTP({
         className={`form-container ${containerClass}`}
         style={containerStyle}
       >
-        <button className="input-card__close" onClick={toggleOnclose}>
-          <i className="fas fa-times"></i>
-        </button>
         <div className="otp">
           <div className="otp__title">Phone Verification</div>
           <div className="otp__line"></div>
@@ -237,6 +250,7 @@ OTP.defaultProps = {
   inputClass: "",
   containerStyle: {},
   containerClass: "",
+  hasErrored: false,
 };
 
 OTP.propTypes = {
@@ -247,6 +261,7 @@ OTP.propTypes = {
   inputClass: PropTypes.string,
   containerStyle: PropTypes.object,
   containerClass: PropTypes.string,
+  hasErrored: PropTypes.bool,
 };
 
 export default OTP;
