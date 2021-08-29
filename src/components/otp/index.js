@@ -2,8 +2,15 @@ import React, { useState, useRef, useEffect } from "react";
 import "./style.css";
 
 let index = -1; // position of the current input (-1 = not focused on any input)
+let keyCode;
 
-export default function OTP({ active, numberOfInputs = 8, isNumber = true }) {
+export default function OTP({
+  active,
+  numberOfInputs = 8,
+  isNumber = true,
+  placeholder = "0",
+  inputStyle = {},
+}) {
   const ref = useRef(null);
   const [code, setCode] = useState("");
 
@@ -23,7 +30,11 @@ export default function OTP({ active, numberOfInputs = 8, isNumber = true }) {
 
   /* Focuses on the next input when characters are entered sequentially */
   useEffect(() => {
-    if (code.length < numberOfInputs) {
+    if (
+      code.length < numberOfInputs &&
+      keyCode !== 8 &&
+      index > numberOfInputs - 1
+    ) {
       const nextInput = document.querySelector(`#index-${code.length}`);
       nextInput.focus();
     }
@@ -48,6 +59,7 @@ export default function OTP({ active, numberOfInputs = 8, isNumber = true }) {
   /* handles backspace, arrow key events  */
   function handleKeyDown(e) {
     // backspace key event
+    keyCode = e.keyCode;
     if (e.keyCode === 8) {
       if (index !== -1) {
         const newcode = removeCharacter(code, index);
@@ -105,7 +117,6 @@ export default function OTP({ active, numberOfInputs = 8, isNumber = true }) {
               nextInput.focus();
             }
           }
-        } else {
         }
       }
     }
@@ -143,8 +154,6 @@ export default function OTP({ active, numberOfInputs = 8, isNumber = true }) {
         str = pastedData.slice(0, numberOfInputs);
       }
       setCode(str);
-    } else {
-      alert("not a number");
     }
   }
 
@@ -155,12 +164,17 @@ export default function OTP({ active, numberOfInputs = 8, isNumber = true }) {
       let input = (
         <input
           id={`index-${i}`}
-          className="otp__input"
+          key={`input-${i}`}
+          className={`otp__input ${
+            inputStyle && typeof inputStyle === "string" ? inputStyle : ""
+          }`}
+          style={inputStyle && typeof inputStyle === "object" ? inputStyle : ""}
           onFocus={(e) => onInputFocus(e, i)}
           onChange={handleOnChange}
           onPaste={onPaste}
           value={code[i] ? code[i] : ""}
           onKeyDown={handleKeyDown}
+          placeholder={placeholder}
         ></input>
       );
 

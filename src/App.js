@@ -5,7 +5,6 @@ import React from "react";
 function App() {
   function toggleInputForm() {
     let form = document.querySelector(".input-card");
-    console.log(form);
     form.classList.toggle("input-card--active");
     let blurred = document.querySelector(".blur");
     blurred.classList.toggle("blur--active");
