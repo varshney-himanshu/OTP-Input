@@ -36,11 +36,15 @@ function OTP({
 
   /* Focuses on the next input when characters are entered sequentially */
   useEffect(() => {
-    if (
-      code.length < numberOfInputs &&
-      keyCode !== 8 &&
-      index > numberOfInputs - 1
-    ) {
+    if (code.length - 1 >= index) {
+      if (index < numberOfInputs - 1) {
+        const nextInput = document.querySelector(`#index-${index + 1}`);
+        nextInput.focus();
+        return;
+      }
+    }
+
+    if (code.length < numberOfInputs && keyCode !== 8) {
       const nextInput = document.querySelector(`#index-${code.length}`);
       nextInput.focus();
     }
@@ -65,6 +69,7 @@ function OTP({
   /* handles backspace, arrow key events  */
   function handleKeyDown(e) {
     // backspace key event
+
     keyCode = e.keyCode;
     if (e.keyCode === 8) {
       if (index !== -1) {
@@ -98,10 +103,10 @@ function OTP({
 
   /* handles input value changes */
   function handleOnChange(e) {
+    let char = e.target.value[0];
+
     if (e.target.value.match(/^[0-9]+$/)) {
       if (index !== -1) {
-        let char = e.target.value[0];
-
         if (e.target.value !== "") {
           //if the code is empty
           if (code.length === 0) {
@@ -114,14 +119,7 @@ function OTP({
             //if the index of current focused input is greater than or equal to the length of the code. the following code will replace the character of the code string at the same position as the input.
           } else if (code.length - 1 >= index) {
             const newcode = setCharAt(code, index, char);
-
             setCode(newcode);
-
-            // focus on the next input
-            if (index < numberOfInputs - 1) {
-              const nextInput = document.querySelector(`#index-${index + 1}`);
-              nextInput.focus();
-            }
           }
         }
       }
@@ -163,6 +161,15 @@ function OTP({
     }
   }
 
+  function onInput(e) {
+    if (code[index] === e.target.value[0]) {
+      if (index < numberOfInputs - 1) {
+        const nextInput = document.querySelector(`#index-${index + 1}`);
+        nextInput.focus();
+      }
+    }
+  }
+
   /* returns an array of input fields */
   function getInputsJSX() {
     const inputs = [];
@@ -179,6 +186,7 @@ function OTP({
           value={code[i] ? code[i] : ""}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
+          onInput={onInput}
         ></input>
       );
 
