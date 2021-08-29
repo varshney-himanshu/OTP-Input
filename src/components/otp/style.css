@@ -14,6 +14,10 @@
   outline: none;
 }
 
+.otp__input::placeholder {
+  color: #d3d3d3;
+}
+
 /* 6db68b */
 
 .otp__title {
