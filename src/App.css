@@ -4,7 +4,6 @@
   text-align: center;
   width: 100vw;
   height: 100vh;
-  /* background-color: #f0f0f0; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,26 +12,23 @@
 
 .add-otp-btn {
   position: absolute;
-    border: none;
-    background-color: #00FFB9;
-    padding: 15px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 20px;
-    top: 10%;
-    right: 50%;
-    transform: translateX(50%)
-
+  border: none;
+  background-color: #00ffb9;
+  padding: 15px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 20px;
+  top: 10%;
+  right: 50%;
+  transform: translateX(50%);
 }
 
-.add-otp-btn:hover{
+.add-otp-btn:hover {
   background-color: #02eaa8;
 }
 
 .input-card {
-  opacity: 0;
-  pointer-events: none;
   width: 40%;
   overflow: hidden;
   position: fixed;
@@ -52,35 +48,6 @@
   width: 100%;
 }
 
-.input-card--active {
-  opacity: 1;
-  pointer-events: visible;
-  transition: 0.5s;
-}
-
-.input-card__close {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  background-color: white;
-  border: none;
-  cursor: pointer;
-}
-
 i {
   font-size: 20px;
-}
-
-.blur--active {
-    backdrop-filter: blur(2px);
-    user-select: none;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    z-index: 5000;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  
 }
