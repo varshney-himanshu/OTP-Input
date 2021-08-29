@@ -1,15 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
+import PropTypes from "prop-types";
 import "./style.css";
 
 let index = -1; // position of the current input (-1 = not focused on any input)
 let keyCode;
 
-export default function OTP({
+function OTP({
   active,
-  numberOfInputs = 8,
-  isNumber = true,
-  placeholder = "0",
-  inputStyle = {},
+  numberOfInputs,
+  isNumber,
+  placeholder,
+  inputStyle,
+  inputClass,
+  containerStyle,
+  containerClass,
+  buttonStyle,
+  buttonContainer,
 }) {
   const ref = useRef(null);
   const [code, setCode] = useState("");
@@ -165,10 +171,8 @@ export default function OTP({
         <input
           id={`index-${i}`}
           key={`input-${i}`}
-          className={`otp__input ${
-            inputStyle && typeof inputStyle === "string" ? inputStyle : ""
-          }`}
-          style={inputStyle && typeof inputStyle === "object" ? inputStyle : ""}
+          className={`otp__input ${inputClass}`}
+          style={inputStyle}
           onFocus={(e) => onInputFocus(e, i)}
           onChange={handleOnChange}
           onPaste={onPaste}
@@ -188,7 +192,10 @@ export default function OTP({
 
   return (
     <div className="input-card">
-      <div className="form-container">
+      <div
+        className={`form-container ${containerClass}`}
+        style={containerStyle}
+      >
         <button className="input-card__close" onClick={toggleOnclose}>
           <i className="fas fa-times"></i>
         </button>
@@ -213,3 +220,25 @@ export default function OTP({
     </div>
   );
 }
+
+OTP.defaultProps = {
+  numberOfInputs: 4,
+  isNumber: false,
+  placeholder: "0",
+  inputStyle: {},
+  inputClass: "",
+  containerStyle: {},
+  containerClass: "",
+};
+
+OTP.propTypes = {
+  numberOfInputs: PropTypes.number,
+  isNumber: PropTypes.bool,
+  placeholder: PropTypes.string,
+  inputStyle: PropTypes.object,
+  inputClass: PropTypes.string,
+  containerStyle: PropTypes.object,
+  containerClass: PropTypes.string,
+};
+
+export default OTP;
