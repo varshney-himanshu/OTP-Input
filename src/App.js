@@ -14,7 +14,7 @@ function App() {
   return (
     <div className="App">
       <div className="panel">
-        <OTP hasErrored={error} />
+        <OTP hasErrored={error} resendDuration={60} />
       </div>
     </div>
   );
