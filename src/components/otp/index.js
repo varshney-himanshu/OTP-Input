@@ -55,14 +55,14 @@ function OTP({
     if (index !== -1) {
       if (code.length - 1 >= index) {
         if (index < numberOfInputs - 1) {
-          const nextInput = document.querySelector(`#index-${index + 1}`);
+          const nextInput = document.getElementById(`index-${index + 1}`);
           nextInput.focus();
           return;
         }
       }
 
       if (code.length < numberOfInputs && keyCode !== 8) {
-        const nextInput = document.querySelector(`#index-${code.length}`);
+        const nextInput = document.getElementById(`index-${code.length}`);
         nextInput.focus();
       }
     }
@@ -70,7 +70,7 @@ function OTP({
 
   /* Sets the index position and selects the character when input is focused */
   function onInputFocus(e, pos) {
-    const currentInput = document.querySelector(`#index-${pos}`);
+    const currentInput = document.getElementById(`index-${pos}`);
     if (currentInput !== null) {
       currentInput.classList.remove("otp__input--active");
     }
@@ -98,7 +98,7 @@ function OTP({
         setCode(newcode);
 
         if (index > 0) {
-          const nextInput = document.querySelector(`#index-${index - 1}`);
+          const nextInput = document.getElementById(`index-${index - 1}`);
           nextInput.focus();
         }
       }
@@ -107,7 +107,7 @@ function OTP({
     // left arrow event
     if (e.keyCode === 37) {
       if (index > 0) {
-        const prevInput = document.querySelector(`#index-${index - 1}`);
+        const prevInput = document.getElementById(`index-${index - 1}`);
         prevInput.focus();
       }
     }
@@ -115,7 +115,7 @@ function OTP({
     // right arrow event
     if (e.keyCode === 39) {
       if (index < numberOfInputs - 1) {
-        const nextInput = document.querySelector(`#index-${index + 1}`);
+        const nextInput = document.getElementById(`index-${index + 1}`);
 
         nextInput.focus();
       }
@@ -180,7 +180,7 @@ function OTP({
   function onInput(e) {
     if (code[index] === e.target.value[0]) {
       if (index < numberOfInputs - 1) {
-        const nextInput = document.querySelector(`#index-${index + 1}`);
+        const nextInput = document.getElementById(`index-${index + 1}`);
         nextInput.focus();
       }
     }
