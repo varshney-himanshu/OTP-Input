@@ -6,7 +6,6 @@ let index = -1; // position of the current input (-1 = not focused on any input)
 let keyCode;
 
 function OTP({
-  active,
   numberOfInputs,
   isNumber,
   placeholder,
@@ -17,9 +16,12 @@ function OTP({
   buttonStyle,
   buttonContainer,
   hasErrored,
+  resendDuration,
 }) {
   const ref = useRef(null);
   const [code, setCode] = useState("");
+  const [isResendActive, setIsResendActive] = useState(false);
+  const [counter, setCounter] = useState(resendDuration);
   let validRegex = isNumber ? /^[0-9]+$/ : /./;
 
   /* makes the current index -1 when someone clicks outside of the input container */
@@ -186,6 +188,17 @@ function OTP({
     }
   }
 
+  useEffect(() => {
+    const timer =
+      counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
+    if (counter === 0) {
+      setIsResendActive(true);
+    }
+    return () => {
+      clearInterval(timer);
+    };
+  }, [counter]);
+
   /* returns an array of input fields */
   function getInputsJSX() {
     const inputs = [];
@@ -231,9 +244,15 @@ function OTP({
             <button className="otp__alternate-options__changebtn">
               Change Number
             </button>
-            <button className="otp__alternate-options__changebtn">
-              Re-send OTP
-            </button>
+            {isResendActive ? (
+              <button className="otp__alternate-options__changebtn">
+                Resend OTP
+              </button>
+            ) : (
+              <span className="otp__alternate-options__timer">
+                Resend OTP in 00:{counter}
+              </span>
+            )}
           </div>
           <button className="otp__submit-btn">Verify Phone Number</button>
         </div>
@@ -251,6 +270,7 @@ OTP.defaultProps = {
   containerStyle: {},
   containerClass: "",
   hasErrored: false,
+  resendDuration: 59,
 };
 
 OTP.propTypes = {
@@ -262,6 +282,7 @@ OTP.propTypes = {
   containerStyle: PropTypes.object,
   containerClass: PropTypes.string,
   hasErrored: PropTypes.bool,
+  resendDuration: PropTypes.number,
 };
 
 export default OTP;
