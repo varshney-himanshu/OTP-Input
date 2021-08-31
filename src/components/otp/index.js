@@ -5,26 +5,35 @@ import { floor } from "lodash";
 
 // let index = -1;
 
-let keyCode;
+//let keyCode;
 function OTP({
   value,
   setValue,
   numberOfInputs,
   isNumber,
   placeholder,
+  primaryText,
+  secondaryText,
+  hasErrored,
+  resendDuration,
+  onOtpResend,
   inputStyle,
   inputClass,
   containerStyle,
   containerClass,
-  buttonStyle,
-  buttonContainer,
-  hasErrored,
-  resendDuration,
-  onOtpResend,
+  primaryTextStyle,
+  primaryTextClass,
+  secondaryTextStyle,
+  secondaryTextClass,
+  primaryButtonStyle,
+  primaryButtonClass,
+  secondaryButtonStyle,
+  secondaryButtonClass,
 }) {
   const ref = useRef(null);
 
   const index = useRef(-1); // position of the current input (-1 = not focused on any input)
+  const keyCode = useRef(null);
 
   const [isResendInactive, setIsResendInactive] = useState(false);
   let duration = resendDuration - 1;
@@ -76,7 +85,7 @@ function OTP({
         }
       }
 
-      if (value.length < numberOfInputs && keyCode !== 8) {
+      if (value.length < numberOfInputs && keyCode.current !== 8) {
         const nextInput = document.getElementById(`index-${value.length}`);
         nextInput.focus();
       }
@@ -101,6 +110,12 @@ function OTP({
       clearInterval(timer);
     };
   }, [counter, minutes, isResendInactive]);
+
+  function handleOnClear() {
+    setValue("");
+    const nextInput = document.getElementById(`index-0`);
+    nextInput.focus();
+  }
 
   function handleOnResend() {
     setIsResendInactive(true);
@@ -132,8 +147,8 @@ function OTP({
   function handleKeyDown(e) {
     // backspace key event
 
-    keyCode = e.keyCode;
-    if (e.keyCode === 8) {
+    keyCode.current = e.keyCode;
+    if (keyCode.current === 8) {
       if (index.current !== -1) {
         const newvalue = removeCharacter(value, index.current);
         setValue(newvalue);
@@ -272,19 +287,32 @@ function OTP({
         style={containerStyle}
       >
         <div className="otp">
-          <div className="otp__title">Phone Verification</div>
+          <div
+            className={`otp__title ${primaryTextClass}`}
+            style={primaryTextStyle}
+          >
+            {primaryText}
+          </div>
           <div className="otp__line"></div>
-          <div className="otp__content">
-            Enter the OTP you received on 89206-6XXXX
+          <div
+            className={`otp__content ${secondaryTextClass}`}
+            style={secondaryTextStyle}
+          >
+            {secondaryText}
           </div>
           <div ref={ref}>{inputsJSX}</div>
           <div className="otp__alternate-options">
-            <button className="otp__alternate-options__changebtn">
+            <button
+              className={`otp__alternate-options__changebtn ${secondaryButtonClass}`}
+              style={secondaryButtonStyle}
+              onClick={handleOnClear}
+            >
               Clear input
             </button>
             {!isResendInactive ? (
               <button
-                className="otp__alternate-options__changebtn"
+                className={`otp__alternate-options__changebtn ${secondaryButtonClass}`}
+                style={secondaryButtonStyle}
                 onClick={handleOnResend}
               >
                 Resend OTP
@@ -296,7 +324,12 @@ function OTP({
               </span>
             )}
           </div>
-          <button className="otp__submit-btn">Verify Phone Number</button>
+          <button
+            className={`otp__submit-btn ${primaryButtonClass}`}
+            style={primaryButtonStyle}
+          >
+            Verify Phone Number
+          </button>
         </div>
       </div>
     </div>
@@ -311,9 +344,19 @@ OTP.defaultProps = {
   inputClass: "",
   containerStyle: {},
   containerClass: "",
+  primaryTextStyle: {},
+  primaryTextClass: "",
+  secondaryTextStyle: {},
+  secondaryTextClass: "",
+  primaryButtonStyle: {},
+  primaryButtonClass: "",
+  secondaryButtonStyle: {},
+  secondaryButtonClass: "",
   hasErrored: false,
   resendDuration: 60,
   onOtpResend: () => {},
+  primaryText: "Phone Verification",
+  secondaryText: "Enter the OTP you received on 89206-6XXXX",
 };
 
 OTP.propTypes = {
@@ -329,6 +372,16 @@ OTP.propTypes = {
   hasErrored: PropTypes.bool,
   resendDuration: PropTypes.number,
   onOtpResend: PropTypes.func,
+  primaryText: PropTypes.string,
+  secondaryText: PropTypes.string,
+  primaryTextStyle: PropTypes.object,
+  primaryTextClass: PropTypes.string,
+  secondaryTextStyle: PropTypes.object,
+  secondaryTextClass: PropTypes.string,
+  primaryButtonStyle: PropTypes.object,
+  primaryButtonClass: PropTypes.string,
+  secondaryButtonStyle: PropTypes.object,
+  secondaryButtonClass: PropTypes.string,
 };
 
 export default OTP;

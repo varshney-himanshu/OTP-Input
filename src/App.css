@@ -51,3 +51,9 @@
 i {
   font-size: 20px;
 }
+
+.btn-class {
+  border: 1px solid #acacac !important;
+  border-radius: 5px;
+  padding: 5px;
+}
