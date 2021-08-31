@@ -169,6 +169,14 @@ function OTP({
   function handleOnChange(e) {
     let char = e.target.value[0];
 
+    if (char === " ") {
+      if (index.current < numberOfInputs - 1) {
+        const nextInput = document.getElementById(`index-${index.current + 1}`);
+        nextInput.focus();
+      }
+      return;
+    }
+
     if (e.target.value.match(validRegex)) {
       if (index.current !== -1) {
         if (e.target.value !== "") {
@@ -176,7 +184,7 @@ function OTP({
           if (value.length === 0) {
             setValue(char);
 
-            //if the index of current focused input is less than the length of the value
+            //if the index of current focused input is greater than the length of the value
           } else if (value.length - 1 < index.current) {
             setValue(value + char);
 
