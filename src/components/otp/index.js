@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./style.css";
+import { floor } from "lodash";
 
 let index = -1; // position of the current input (-1 = not focused on any input)
 let keyCode;
 
 function OTP({
-  active,
   numberOfInputs,
   isNumber,
   placeholder,
@@ -17,9 +17,18 @@ function OTP({
   buttonStyle,
   buttonContainer,
   hasErrored,
+  resendDuration,
+  onOtpResend,
 }) {
   const ref = useRef(null);
   const [code, setCode] = useState("");
+  const [isResendInactive, setIsResendInactive] = useState(false);
+  let duration = resendDuration - 1;
+  //let minutes = floor(duration / 60);
+  const [minutes, setMinutes] = useState(floor(duration / 60));
+  let seconds = duration % 60;
+  //duration = new Date(resendDuration * 1000).toISOString().substr(14, 5);
+  const [counter, setCounter] = useState(seconds);
   let validRegex = isNumber ? /^[0-9]+$/ : /./;
 
   /* makes the current index -1 when someone clicks outside of the input container */
@@ -186,6 +195,32 @@ function OTP({
     }
   }
 
+  /*This useEffect will start the timer on Resend Button Click*/
+  useEffect(() => {
+    if (isResendInactive) {
+      var timer =
+        counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
+      if (counter === 0) {
+        if (minutes > 0) {
+          setCounter(59);
+          setMinutes(minutes - 1);
+        } else {
+          setIsResendInactive(false);
+        }
+      }
+    }
+    return () => {
+      clearInterval(timer);
+    };
+  }, [counter, minutes, isResendInactive]);
+
+  function handleOnResend() {
+    setIsResendInactive(true);
+    setMinutes(floor(duration / 60));
+    setCounter(seconds);
+    //onOtpResend();
+  }
+
   /* returns an array of input fields */
   function getInputsJSX() {
     const inputs = [];
@@ -229,11 +264,21 @@ function OTP({
           <div ref={ref}>{inputsJSX}</div>
           <div className="otp__alternate-options">
             <button className="otp__alternate-options__changebtn">
-              Change Number
+              Clear input
             </button>
-            <button className="otp__alternate-options__changebtn">
-              Re-send OTP
-            </button>
+            {!isResendInactive ? (
+              <button
+                className="otp__alternate-options__changebtn"
+                onClick={handleOnResend}
+              >
+                Resend OTP
+              </button>
+            ) : (
+              <span className="otp__alternate-options__timer">
+                Resend OTP in {minutes < 10 ? "0" + minutes : minutes}:
+                {counter < 10 ? "0" + counter : counter}
+              </span>
+            )}
           </div>
           <button className="otp__submit-btn">Verify Phone Number</button>
         </div>
@@ -251,6 +296,7 @@ OTP.defaultProps = {
   containerStyle: {},
   containerClass: "",
   hasErrored: false,
+  resendDuration: 60,
 };
 
 OTP.propTypes = {
@@ -262,6 +308,8 @@ OTP.propTypes = {
   containerStyle: PropTypes.object,
   containerClass: PropTypes.string,
   hasErrored: PropTypes.bool,
+  resendDuration: PropTypes.number,
+  onOtpResend: PropTypes.func,
 };
 
 export default OTP;
