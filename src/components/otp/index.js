@@ -3,10 +3,12 @@ import PropTypes from "prop-types";
 import "./style.css";
 import { floor } from "lodash";
 
-let index = -1; // position of the current input (-1 = not focused on any input)
-let keyCode;
+// let index = -1;
 
+let keyCode;
 function OTP({
+  value,
+  setValue,
   numberOfInputs,
   isNumber,
   placeholder,
@@ -21,7 +23,9 @@ function OTP({
   onOtpResend,
 }) {
   const ref = useRef(null);
-  const [code, setCode] = useState("");
+
+  const index = useRef(-1); // position of the current input (-1 = not focused on any input)
+
   const [isResendInactive, setIsResendInactive] = useState(false);
   let duration = resendDuration - 1;
   //let minutes = floor(duration / 60);
@@ -61,21 +65,49 @@ function OTP({
 
   /* Focuses on the next input when characters are entered sequentially */
   useEffect(() => {
-    if (index !== -1) {
-      if (code.length - 1 >= index) {
-        if (index < numberOfInputs - 1) {
-          const nextInput = document.getElementById(`index-${index + 1}`);
+    if (index.current !== -1) {
+      if (value.length - 1 >= index.current) {
+        if (index.current < numberOfInputs - 1) {
+          const nextInput = document.getElementById(
+            `index-${index.current + 1}`
+          );
           nextInput.focus();
           return;
         }
       }
 
-      if (code.length < numberOfInputs && keyCode !== 8) {
-        const nextInput = document.getElementById(`index-${code.length}`);
+      if (value.length < numberOfInputs && keyCode !== 8) {
+        const nextInput = document.getElementById(`index-${value.length}`);
         nextInput.focus();
       }
     }
-  }, [code, numberOfInputs]);
+  }, [value, numberOfInputs]);
+
+  /*This useEffect will start the timer on Resend Button Click*/
+  useEffect(() => {
+    if (isResendInactive) {
+      var timer =
+        counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
+      if (counter === 0) {
+        if (minutes > 0) {
+          setCounter(59);
+          setMinutes(minutes - 1);
+        } else {
+          setIsResendInactive(false);
+        }
+      }
+    }
+    return () => {
+      clearInterval(timer);
+    };
+  }, [counter, minutes, isResendInactive]);
+
+  function handleOnResend() {
+    setIsResendInactive(true);
+    setMinutes(floor(duration / 60));
+    setCounter(seconds);
+    onOtpResend();
+  }
 
   /* Sets the index position and selects the character when input is focused */
   function onInputFocus(e, pos) {
@@ -93,7 +125,7 @@ function OTP({
 
   /* Sets the index for the current input */
   function setPosition(pos) {
-    index = pos;
+    index.current = pos;
   }
 
   /* handles backspace, arrow key events  */
@@ -102,12 +134,14 @@ function OTP({
 
     keyCode = e.keyCode;
     if (e.keyCode === 8) {
-      if (index !== -1) {
-        const newcode = removeCharacter(code, index);
-        setCode(newcode);
+      if (index.current !== -1) {
+        const newvalue = removeCharacter(value, index.current);
+        setValue(newvalue);
 
-        if (index > 0) {
-          const nextInput = document.getElementById(`index-${index - 1}`);
+        if (index.current > 0) {
+          const nextInput = document.getElementById(
+            `index-${index.current - 1}`
+          );
           nextInput.focus();
         }
       }
@@ -115,16 +149,16 @@ function OTP({
 
     // left arrow event
     if (e.keyCode === 37) {
-      if (index > 0) {
-        const prevInput = document.getElementById(`index-${index - 1}`);
+      if (index.current > 0) {
+        const prevInput = document.getElementById(`index-${index.current - 1}`);
         prevInput.focus();
       }
     }
 
     // right arrow event
     if (e.keyCode === 39) {
-      if (index < numberOfInputs - 1) {
-        const nextInput = document.getElementById(`index-${index + 1}`);
+      if (index.current < numberOfInputs - 1) {
+        const nextInput = document.getElementById(`index-${index.current + 1}`);
 
         nextInput.focus();
       }
@@ -136,20 +170,20 @@ function OTP({
     let char = e.target.value[0];
 
     if (e.target.value.match(validRegex)) {
-      if (index !== -1) {
+      if (index.current !== -1) {
         if (e.target.value !== "") {
-          //if the code is empty
-          if (code.length === 0) {
-            setCode(char);
+          //if the value is empty
+          if (value.length === 0) {
+            setValue(char);
 
-            //if the index of current focused input is less than the length of the code
-          } else if (code.length - 1 < index) {
-            setCode(code + char);
+            //if the index of current focused input is less than the length of the value
+          } else if (value.length - 1 < index.current) {
+            setValue(value + char);
 
-            //if the index of current focused input is greater than or equal to the length of the code. the following code will replace the character of the code string at the same position as the input.
-          } else if (code.length - 1 >= index) {
-            const newcode = setCharAt(code, index, char);
-            setCode(newcode);
+            //if the index of current focused input is greater than or equal to the length of the value. the following value will replace the character of the value string at the same position as the input.
+          } else if (value.length - 1 >= index.current) {
+            const newvalue = setCharAt(value, index.current, char);
+            setValue(newvalue);
           }
         }
       }
@@ -182,43 +216,17 @@ function OTP({
       if (pastedData.length > numberOfInputs) {
         str = pastedData.slice(0, numberOfInputs);
       }
-      setCode(str);
+      setValue(str);
     }
   }
 
   function onInput(e) {
-    if (code[index] === e.target.value[0]) {
-      if (index < numberOfInputs - 1) {
-        const nextInput = document.getElementById(`index-${index + 1}`);
+    if (value[index.current] === e.target.value[0]) {
+      if (index.current < numberOfInputs - 1) {
+        const nextInput = document.getElementById(`index-${index.current + 1}`);
         nextInput.focus();
       }
     }
-  }
-
-  /*This useEffect will start the timer on Resend Button Click*/
-  useEffect(() => {
-    if (isResendInactive) {
-      var timer =
-        counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
-      if (counter === 0) {
-        if (minutes > 0) {
-          setCounter(59);
-          setMinutes(minutes - 1);
-        } else {
-          setIsResendInactive(false);
-        }
-      }
-    }
-    return () => {
-      clearInterval(timer);
-    };
-  }, [counter, minutes, isResendInactive]);
-
-  function handleOnResend() {
-    setIsResendInactive(true);
-    setMinutes(floor(duration / 60));
-    setCounter(seconds);
-    //onOtpResend();
   }
 
   /* returns an array of input fields */
@@ -234,7 +242,7 @@ function OTP({
           onFocus={(e) => onInputFocus(e, i)}
           onChange={handleOnChange}
           onPaste={onPaste}
-          value={code[i] ? code[i] : ""}
+          value={value[i] ? value[i] : ""}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           onInput={onInput}
@@ -297,9 +305,12 @@ OTP.defaultProps = {
   containerClass: "",
   hasErrored: false,
   resendDuration: 60,
+  onOtpResend: () => {},
 };
 
 OTP.propTypes = {
+  value: PropTypes.string,
+  setValue: PropTypes.func,
   numberOfInputs: PropTypes.number,
   isNumber: PropTypes.bool,
   placeholder: PropTypes.string,

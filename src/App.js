@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 
 function App() {
   const [error, setError] = useState(false);
+  const [value, setValue] = useState("");
   useEffect(() => {
     // setTimeout(() => {
     //   setError(true);
@@ -14,7 +15,12 @@ function App() {
   return (
     <div className="App">
       <div className="panel">
-        <OTP hasErrored={error} resendDuration={60} />
+        <OTP
+          hasErrored={error}
+          value={value}
+          setValue={setValue}
+          resendDuration={60}
+        />
       </div>
     </div>
   );
