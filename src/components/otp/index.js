@@ -2,8 +2,13 @@ import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./style.css";
 import { floor } from "lodash";
-
 // let index = -1;
+
+const BACKSPACE_KEY = 8;
+const LEFTARROW_KEY = 37;
+const RIGHTARROW_KEY = 39;
+const NOT_SELECTED = -1;
+const EMPTY_CHARACTER = " ";
 
 //let keyCode;
 function OTP({
@@ -15,6 +20,7 @@ function OTP({
   primaryText,
   secondaryText,
   hasErrored,
+  isDisabled,
   resendDuration,
   onOtpResend,
   inputStyle,
@@ -32,7 +38,7 @@ function OTP({
 }) {
   const ref = useRef(null);
 
-  const index = useRef(-1); // position of the current input (-1 = not focused on any input)
+  const index = useRef(NOT_SELECTED); // position of the current input (-1 = not focused on any input)
   const keyCode = useRef(null);
 
   const [isResendInactive, setIsResendInactive] = useState(false);
@@ -48,7 +54,7 @@ function OTP({
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (ref.current && !ref.current.contains(event.target)) {
-        setPosition(-1);
+        setPosition(NOT_SELECTED);
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -74,7 +80,7 @@ function OTP({
 
   /* Focuses on the next input when characters are entered sequentially */
   useEffect(() => {
-    if (index.current !== -1) {
+    if (index.current !== NOT_SELECTED) {
       if (value.length - 1 >= index.current) {
         if (index.current < numberOfInputs - 1) {
           const nextInput = document.getElementById(
@@ -85,7 +91,7 @@ function OTP({
         }
       }
 
-      if (value.length < numberOfInputs && keyCode.current !== 8) {
+      if (value.length < numberOfInputs && keyCode.current !== BACKSPACE_KEY) {
         const nextInput = document.getElementById(`index-${value.length}`);
         nextInput.focus();
       }
@@ -148,8 +154,8 @@ function OTP({
     // backspace key event
 
     keyCode.current = e.keyCode;
-    if (keyCode.current === 8) {
-      if (index.current !== -1) {
+    if (keyCode.current === BACKSPACE_KEY) {
+      if (index.current !== NOT_SELECTED) {
         const newvalue = removeCharacter(value, index.current);
         setValue(newvalue);
 
@@ -163,7 +169,7 @@ function OTP({
     }
 
     // left arrow event
-    if (e.keyCode === 37) {
+    if (e.keyCode === LEFTARROW_KEY) {
       if (index.current > 0) {
         const prevInput = document.getElementById(`index-${index.current - 1}`);
         prevInput.focus();
@@ -171,7 +177,7 @@ function OTP({
     }
 
     // right arrow event
-    if (e.keyCode === 39) {
+    if (e.keyCode === RIGHTARROW_KEY) {
       if (index.current < numberOfInputs - 1) {
         const nextInput = document.getElementById(`index-${index.current + 1}`);
 
@@ -184,7 +190,7 @@ function OTP({
   function handleOnChange(e) {
     let char = e.target.value[0];
 
-    if (char === " ") {
+    if (char === EMPTY_CHARACTER) {
       if (index.current < numberOfInputs - 1) {
         const nextInput = document.getElementById(`index-${index.current + 1}`);
         nextInput.focus();
@@ -193,7 +199,7 @@ function OTP({
     }
 
     if (e.target.value.match(validRegex)) {
-      if (index.current !== -1) {
+      if (index.current !== NOT_SELECTED) {
         if (e.target.value !== "") {
           //if the value is empty
           if (value.length === 0) {
@@ -234,7 +240,7 @@ function OTP({
     clipboardData = e.clipboardData || window.clipboardData;
     pastedData = clipboardData.getData("Text");
     pastedData = pastedData.trim();
-    if (pastedData.match(/^[0-9]+$/)) {
+    if (pastedData.match(validRegex)) {
       let str = pastedData;
       if (pastedData.length > numberOfInputs) {
         str = pastedData.slice(0, numberOfInputs);
@@ -269,6 +275,7 @@ function OTP({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           onInput={onInput}
+          disabled={isDisabled}
         ></input>
       );
 
@@ -306,6 +313,7 @@ function OTP({
               className={`otp__alternate-options__changebtn ${secondaryButtonClass}`}
               style={secondaryButtonStyle}
               onClick={handleOnClear}
+              disabled={isDisabled}
             >
               Clear input
             </button>
@@ -353,6 +361,7 @@ OTP.defaultProps = {
   secondaryButtonStyle: {},
   secondaryButtonClass: "",
   hasErrored: false,
+  isDisabled: false,
   resendDuration: 60,
   onOtpResend: () => {},
   primaryText: "Phone Verification",
@@ -370,6 +379,7 @@ OTP.propTypes = {
   containerStyle: PropTypes.object,
   containerClass: PropTypes.string,
   hasErrored: PropTypes.bool,
+  isDisabled: PropTypes.bool,
   resendDuration: PropTypes.number,
   onOtpResend: PropTypes.func,
   primaryText: PropTypes.string,
