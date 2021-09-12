@@ -35,7 +35,7 @@ function OTP({
   primaryButtonClass,
   secondaryButtonStyle,
   secondaryButtonClass,
-  onClick,
+  onOTPSubmit,
 }) {
   const ref = useRef(null);
 
@@ -356,7 +356,7 @@ function OTP({
             className={`otp__submit-btn ${primaryButtonClass}`}
             style={primaryButtonStyle}
             disabled={isDisabledSubmit}
-            onClick={onClick}
+            onClick={onOTPSubmit}
           >
             Verify Phone Number
           </button>
@@ -388,7 +388,7 @@ OTP.defaultProps = {
   onOtpResend: () => {},
   primaryText: "Phone Verification",
   secondaryText: "Enter the OTP you received on 89206-6XXXX",
-  onClick: () => {},
+  onOTPSubmit: () => {},
 };
 
 OTP.propTypes = {
@@ -415,7 +415,7 @@ OTP.propTypes = {
   primaryButtonClass: PropTypes.string,
   secondaryButtonStyle: PropTypes.object,
   secondaryButtonClass: PropTypes.string,
-  onClick: PropTypes.func,
+  onOTPSubmit: PropTypes.func,
 };
 
 export default OTP;

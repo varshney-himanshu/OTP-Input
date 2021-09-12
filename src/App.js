@@ -22,7 +22,7 @@ function App() {
           isDisabled={isDisabled}
           resendDuration={60}
           numberOfInputs={numberOfInputs}
-          onClick={handleOnSubmit}
+          onOTPSubmit={handleOnSubmit}
         />
       </div>
       <div className="App__test">
