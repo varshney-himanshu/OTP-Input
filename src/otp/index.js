@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./style.css";
-import { floor } from "lodash";
 // let index = -1;
 
 const BACKSPACE_KEY = 8;
@@ -47,7 +46,7 @@ function OTP({
   const [isDisabledClear, setIsDisabledClear] = useState(true);
   let duration = resendDuration - 1;
   //let minutes = floor(duration / 60);
-  const [minutes, setMinutes] = useState(floor(duration / 60));
+  const [minutes, setMinutes] = useState(Math.floor(duration / 60));
   let seconds = duration % 60;
   //duration = new Date(resendDuration * 1000).toISOString().substr(14, 5);
   const [counter, setCounter] = useState(seconds);
@@ -145,7 +144,7 @@ function OTP({
 
   function handleOnResend() {
     setIsResendInactive(true);
-    setMinutes(floor(duration / 60));
+    setMinutes(Math.floor(duration / 60));
     setCounter(seconds);
     onOtpResend();
   }
@@ -367,6 +366,7 @@ function OTP({
 }
 
 OTP.defaultProps = {
+  value: "",
   numberOfInputs: 4,
   isNumber: false,
   placeholder: "0",
@@ -392,8 +392,8 @@ OTP.defaultProps = {
 };
 
 OTP.propTypes = {
-  value: PropTypes.string,
-  setValue: PropTypes.func,
+  value: PropTypes.string.isRequired,
+  setValue: PropTypes.func.isRequired,
   numberOfInputs: PropTypes.number,
   isNumber: PropTypes.bool,
   placeholder: PropTypes.string,
