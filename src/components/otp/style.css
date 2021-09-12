@@ -15,6 +15,10 @@
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
 
+.otp__input:disabled {
+  background-color: rgb(228, 228, 228);
+}
+
 .otp__input--active {
   border: 1px solid #ff4c4c;
 }
@@ -57,6 +61,11 @@
   background: transparent;
   color: #003b9b;
   cursor: pointer;
+}
+
+.otp__alternate-options__changebtn:disabled {
+  color: gray;
+  cursor: default;
 }
 
 .otp__alternate-options__timer {

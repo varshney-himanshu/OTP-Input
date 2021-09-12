@@ -10,6 +10,15 @@
   position: relative;
 }
 
+.App__test {
+  position: fixed;
+  left: 10px;
+  top: 10px;
+}
+.App__test__input {
+  text-align: left;
+}
+
 .add-otp-btn {
   position: absolute;
   border: none;
