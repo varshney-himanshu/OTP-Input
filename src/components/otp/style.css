@@ -84,6 +84,10 @@
   font-size: 15px;
 }
 
-.otp__submit-btn:hover {
+.otp__submit-btn:hover:enabled {
   background-color: #02eaa8;
+}
+
+.otp__submit-btn:disabled {
+  cursor: not-allowed;
 }

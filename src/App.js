@@ -8,6 +8,10 @@ function App() {
   const [value, setValue] = useState("");
   const [numberOfInputs, setNumberOfInputs] = useState(4);
 
+  function handleOnSubmit() {
+    console.log("hello");
+  }
+
   return (
     <div className="App">
       <div className="panel">
@@ -18,6 +22,7 @@ function App() {
           isDisabled={isDisabled}
           resendDuration={60}
           numberOfInputs={numberOfInputs}
+          onClick={handleOnSubmit}
         />
       </div>
       <div className="App__test">

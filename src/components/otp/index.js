@@ -35,6 +35,7 @@ function OTP({
   primaryButtonClass,
   secondaryButtonStyle,
   secondaryButtonClass,
+  onClick,
 }) {
   const ref = useRef(null);
 
@@ -42,6 +43,8 @@ function OTP({
   const keyCode = useRef(null);
 
   const [isResendInactive, setIsResendInactive] = useState(false);
+  const [isDisabledSubmit, setIsDisabledSubmit] = useState(true);
+  const [isDisabledClear, setIsDisabledClear] = useState(true);
   let duration = resendDuration - 1;
   //let minutes = floor(duration / 60);
   const [minutes, setMinutes] = useState(floor(duration / 60));
@@ -97,6 +100,23 @@ function OTP({
       }
     }
   }, [value, numberOfInputs]);
+
+  let noOfInputs = numberOfInputs;
+
+  /*This useEffect will make clear button active when input value is not empty */
+  useEffect(() => {
+    if (value !== "") {
+      setIsDisabledClear(false);
+    } else {
+      setIsDisabledClear(true);
+    }
+
+    if (value.length === noOfInputs) {
+      setIsDisabledSubmit(false);
+    } else {
+      setIsDisabledSubmit(true);
+    }
+  }, [value, noOfInputs]);
 
   /*This useEffect will start the timer on Resend Button Click*/
   useEffect(() => {
@@ -313,7 +333,7 @@ function OTP({
               className={`otp__alternate-options__changebtn ${secondaryButtonClass}`}
               style={secondaryButtonStyle}
               onClick={handleOnClear}
-              disabled={isDisabled}
+              disabled={isDisabled || isDisabledClear}
             >
               Clear input
             </button>
@@ -335,6 +355,8 @@ function OTP({
           <button
             className={`otp__submit-btn ${primaryButtonClass}`}
             style={primaryButtonStyle}
+            disabled={isDisabledSubmit}
+            onClick={onClick}
           >
             Verify Phone Number
           </button>
@@ -366,6 +388,7 @@ OTP.defaultProps = {
   onOtpResend: () => {},
   primaryText: "Phone Verification",
   secondaryText: "Enter the OTP you received on 89206-6XXXX",
+  onClick: () => {},
 };
 
 OTP.propTypes = {
@@ -392,6 +415,7 @@ OTP.propTypes = {
   primaryButtonClass: PropTypes.string,
   secondaryButtonStyle: PropTypes.object,
   secondaryButtonClass: PropTypes.string,
+  onClick: PropTypes.func,
 };
 
 export default OTP;
