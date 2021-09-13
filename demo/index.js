@@ -1,6 +1,7 @@
-import "./App.css";
-import OTP from "./components/otp";
+import "./styles.css";
+import OTP from "../lib";
 import React, { useState } from "react";
+import { render } from "react-dom";
 
 function App() {
   const [error, setError] = useState(false);
@@ -54,4 +55,4 @@ function App() {
   );
 }
 
-export default App;
+render(<App />, document.getElementById("app"));

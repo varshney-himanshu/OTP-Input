@@ -1,17 +1,19 @@
 var path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   mode: "production",
-  entry: "./src/otp/index.js",
+  entry: path.join(__dirname, "demo"),
   output: {
-    path: path.resolve("lib"),
+    path: path.join(__dirname, "public"),
     filename: "index.js",
     libraryTarget: "commonjs2",
   },
+
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(js|jsx)$/,
         exclude: /(node_modules)/,
         use: "babel-loader",
       },
@@ -21,5 +23,23 @@ module.exports = {
       },
     ],
   },
-  externals: ["react", "react-dom"],
+
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "demo/index.html"),
+    }),
+  ],
+
+  resolve: {
+    extensions: [".js", ".jsx"],
+  },
+
+  devServer: {
+    static: {
+      directory: path.join(__dirname, "public"),
+    },
+    compress: true,
+    port: 3000,
+  },
+  // externals: ["react", "react-dom"],
 };
